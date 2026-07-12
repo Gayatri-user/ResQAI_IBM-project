@@ -1,0 +1,29 @@
+{
+  "name": "ResQAI",
+  "version": "1.0.0",
+  "description": "An Agentic AI Disaster Response & Rescue Coordination Platform utilizing IBM Granite and IBM BoB.",
+  "keywords": [
+    "AI",
+    "Disaster-Response",
+    "IBM-Granite",
+    "Rescue-Coordination",
+    "Agentic-AI"
+  ],
+  "repository": "https://github.com/YOUR_USERNAME/resqai",
+  "env": {
+    "IBM_GRANITE_API_KEY": {
+      "description": "API key for IBM Granite LLM access.",
+      "required": true
+    },
+    "BOB_ENVIRONMENT": {
+      "description": "Deployment environment for IBM BoB.",
+      "value": "production"
+    }
+  },
+  "scripts": {
+    "start": "python main.py"
+  },
+  "addons": [
+    "heroku-postgresql"
+  ]
+}
