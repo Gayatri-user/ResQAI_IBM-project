@@ -12,7 +12,7 @@ The platform is built on a modular, agentic framework designed for resilience:
 *   **Infrastructure:** Deployed within the IBM BoB environment to ensure scalability and integration with enterprise AI services.
 
 ## 📁 Repository Contents
-| File | Description |
+| Description |
 | :--- | :--- |
 | Project configuration and environment manifest. |
 | Detailed problem statement and research context. |
