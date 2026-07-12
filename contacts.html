@@ -1,0 +1,469 @@
+{% extends "base.html" %}
+{% block title %}Emergency Contacts Directory — ResQAI{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Hero banner ── */
+  .contacts-hero {
+    background: linear-gradient(135deg, #1a0505 0%, #0d1117 50%, #161b22 100%);
+    border-bottom: 1px solid #21262d;
+    padding: 2.5rem 0 2rem;
+  }
+  .contacts-911-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 80px; height: 80px; border-radius: 50%;
+    background: rgba(220,53,69,.15); border: 2px solid rgba(220,53,69,.5);
+    font-size: 2.2rem; font-weight: 900; color: #dc3545;
+    animation: pulse-ring 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse-ring {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220,53,69,.4); }
+    50%       { box-shadow: 0 0 0 12px rgba(220,53,69,0); }
+  }
+
+  /* ── Search bar ── */
+  .contacts-search-wrap { position: relative; }
+  .contacts-search-wrap .bi-search {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: #7d8590; pointer-events: none;
+  }
+  #contactSearch {
+    padding-left: 2.4rem;
+    background: #161b22; border: 1px solid #30363d; color: #e6edf3;
+    border-radius: 8px;
+  }
+  #contactSearch::placeholder { color: #7d8590; }
+  #contactSearch:focus {
+    background: #1c2128; border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220,53,69,.15); color: #e6edf3;
+  }
+
+  /* ── Region tabs ── */
+  .region-tab {
+    background: #161b22; border: 1px solid #21262d; color: #8b949e;
+    border-radius: 8px; padding: .45rem 1rem; font-size: .85rem;
+    font-weight: 600; cursor: pointer; transition: all .18s;
+    white-space: nowrap;
+  }
+  .region-tab:hover { border-color: #444c56; color: #e6edf3; }
+  .region-tab.active { background: #dc3545; border-color: #dc3545; color: #fff; }
+
+  /* ── Category filter chips ── */
+  .cat-chip {
+    background: #161b22; border: 1px solid #21262d; color: #8b949e;
+    border-radius: 20px; padding: .25rem .75rem; font-size: .75rem;
+    font-weight: 600; cursor: pointer; transition: all .15s; user-select: none;
+  }
+  .cat-chip:hover { border-color: #444c56; color: #e6edf3; }
+  .cat-chip.active { color: #fff; }
+  .cat-chip[data-cat="all"].active  { background: #444c56; border-color: #444c56; }
+  .cat-chip[data-cat="emergency"].active { background: #dc3545; border-color: #dc3545; }
+  .cat-chip[data-cat="medical"].active   { background: #198754; border-color: #198754; }
+  .cat-chip[data-cat="crisis"].active    { background: #6f42c1; border-color: #6f42c1; }
+  .cat-chip[data-cat="disaster"].active  { background: #fd7e14; border-color: #fd7e14; }
+  .cat-chip[data-cat="safety"].active    { background: #0dcaf0; border-color: #0dcaf0; }
+
+  /* ── Contact card ── */
+  .contact-card {
+    background: #161b22; border: 1px solid #21262d;
+    border-radius: 12px; padding: 1.1rem 1.25rem;
+    transition: border-color .18s, transform .18s;
+    cursor: default; height: 100%;
+  }
+  .contact-card:hover { border-color: #444c56; transform: translateY(-2px); }
+  .contact-card.priority-card { border-color: rgba(220,53,69,.4); background: #1a0808; }
+  .contact-card.priority-card:hover { border-color: #dc3545; }
+
+  .contact-number {
+    font-size: 1.35rem; font-weight: 800; letter-spacing: .02em;
+    line-height: 1.2; margin-bottom: .3rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .priority-card .contact-number { color: #dc3545; }
+  .contact-card:not(.priority-card) .contact-number { color: #e6edf3; }
+
+  .contact-name { font-weight: 600; font-size: .85rem; color: #e6edf3; margin-bottom: .2rem; }
+  .contact-desc { font-size: .75rem; color: #7d8590; line-height: 1.4; }
+
+  .contact-card-footer {
+    margin-top: .75rem; padding-top: .65rem;
+    border-top: 1px solid #21262d;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: .5rem;
+  }
+  .contact-cat-badge {
+    font-size: .65rem; font-weight: 700; border-radius: 4px;
+    padding: .15rem .45rem; text-transform: uppercase; letter-spacing: .06em;
+  }
+  .cat-emergency { background: rgba(220,53,69,.15); color: #dc3545; }
+  .cat-medical    { background: rgba(25,135,84,.15);  color: #34d399; }
+  .cat-crisis     { background: rgba(111,66,193,.15); color: #a78bfa; }
+  .cat-disaster   { background: rgba(253,126,20,.15); color: #fd7e14; }
+  .cat-safety     { background: rgba(13,202,240,.15); color: #0dcaf0; }
+
+  .copy-btn {
+    background: none; border: 1px solid #30363d; color: #7d8590;
+    border-radius: 6px; padding: .2rem .5rem; font-size: .7rem;
+    cursor: pointer; transition: all .15s; white-space: nowrap;
+  }
+  .copy-btn:hover { border-color: #8b949e; color: #e6edf3; }
+  .copy-btn.copied { border-color: #34d399; color: #34d399; }
+
+  /* ── Availability dot ── */
+  .avail-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    display: inline-block; margin-right: 4px;
+    background: #34d399;
+    box-shadow: 0 0 4px #34d399;
+  }
+
+  /* ── Section divider label ── */
+  .section-label {
+    font-size: .68rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: #dc3545; margin-bottom: .3rem; display: block;
+  }
+
+  /* ── No results ── */
+  #noResults { display: none; }
+
+  /* ── Quick-save tip ── */
+  .save-tip {
+    background: #161b22; border: 1px solid #21262d; border-radius: 10px;
+    padding: 1.25rem 1.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════ HERO ═══════════════════ -->
+<section class="contacts-hero">
+  <div class="container">
+    <div class="row align-items-center gy-3">
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-3 mb-2">
+          <div class="contacts-911-badge">911</div>
+          <div>
+            <span class="section-label">Emergency Directory</span>
+            <h1 class="fw-bold text-white mb-0" style="font-size: clamp(1.6rem, 3.5vw, 2.4rem);">
+              Emergency Contacts
+            </h1>
+          </div>
+        </div>
+        <p class="text-secondary mb-0" style="max-width: 520px;">
+          A comprehensive, region-filtered directory of emergency numbers — police, fire, medical,
+          crisis support, and disaster agencies worldwide.
+          <strong class="text-white">Save them before you need them.</strong>
+        </p>
+      </div>
+      <div class="col-lg-5">
+        <!-- Global primary numbers quick-ref -->
+        <div class="d-flex flex-wrap gap-2">
+          <div class="save-tip flex-fill text-center p-2">
+            <div class="fw-bold text-danger" style="font-size:1.5rem;">911</div>
+            <div class="text-muted" style="font-size:.7rem;">USA / Canada</div>
+          </div>
+          <div class="save-tip flex-fill text-center p-2">
+            <div class="fw-bold text-danger" style="font-size:1.5rem;">999</div>
+            <div class="text-muted" style="font-size:.7rem;">United Kingdom</div>
+          </div>
+          <div class="save-tip flex-fill text-center p-2">
+            <div class="fw-bold text-danger" style="font-size:1.5rem;">112</div>
+            <div class="text-muted" style="font-size:.7rem;">EU / Global Mobile</div>
+          </div>
+          <div class="save-tip flex-fill text-center p-2">
+            <div class="fw-bold text-danger" style="font-size:1.5rem;">000</div>
+            <div class="text-muted" style="font-size:.7rem;">Australia</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════ MAIN ═══════════════════ -->
+<div class="container py-4">
+
+  <!-- Search + Region tabs -->
+  <div class="row g-3 mb-4 align-items-center">
+    <div class="col-md-4">
+      <div class="contacts-search-wrap">
+        <i class="bi bi-search"></i>
+        <input type="text" id="contactSearch" class="form-control"
+               placeholder="Search contacts…" autocomplete="off" />
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="d-flex flex-wrap gap-2" id="regionTabs">
+        <button class="region-tab active" data-region="us">🇺🇸 United States</button>
+        <button class="region-tab" data-region="uk">🇬🇧 United Kingdom</button>
+        <button class="region-tab" data-region="ca">🇨🇦 Canada</button>
+        <button class="region-tab" data-region="au">🇦🇺 Australia</button>
+        <button class="region-tab" data-region="in">🇮🇳 India</button>
+        <button class="region-tab" data-region="eu">🇪🇺 Europe</button>
+        <button class="region-tab" data-region="intl">🌐 International</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category chips -->
+  <div class="d-flex flex-wrap gap-2 mb-4" id="catChips">
+    <span class="cat-chip active" data-cat="all">All</span>
+    <span class="cat-chip" data-cat="emergency"><i class="bi bi-telephone-fill me-1"></i>Emergency</span>
+    <span class="cat-chip" data-cat="medical"><i class="bi bi-heart-pulse me-1"></i>Medical</span>
+    <span class="cat-chip" data-cat="crisis"><i class="bi bi-chat-heart me-1"></i>Crisis Support</span>
+    <span class="cat-chip" data-cat="disaster"><i class="bi bi-hurricane me-1"></i>Disaster Relief</span>
+    <span class="cat-chip" data-cat="safety"><i class="bi bi-shield-check me-1"></i>Safety</span>
+  </div>
+
+  <!-- Result count -->
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <small class="text-muted" id="resultCount"></small>
+    <small class="text-muted">
+      <span class="avail-dot"></span>All lines operate 24/7 unless noted
+    </small>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="row g-3" id="contactsGrid"></div>
+
+  <!-- No results -->
+  <div id="noResults" class="text-center py-5">
+    <i class="bi bi-search text-muted fs-1 d-block mb-3 opacity-50"></i>
+    <p class="text-muted mb-0">No contacts match your search.</p>
+    <small class="text-muted">Try a different keyword or clear the search.</small>
+  </div>
+
+  <!-- Quick-save tip -->
+  <div class="save-tip mt-5 d-flex align-items-start gap-3">
+    <i class="bi bi-bookmark-heart-fill text-danger fs-4 flex-shrink-0 mt-1"></i>
+    <div>
+      <div class="fw-bold text-white small mb-1">Pro Tip — Save These Now</div>
+      <p class="text-secondary small mb-0">
+        Add your region's primary emergency number, poison control, and crisis line to your phone contacts
+        right now. In a real emergency your hands may be shaking — having them pre-saved saves critical seconds.
+        Screenshot this page and share it with family members.
+      </p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+
+{% block extra_scripts %}
+<script>
+/* ════════════════════════════════════════════
+   DATA — all contacts, keyed by region
+════════════════════════════════════════════ */
+const CONTACTS = {
+  us: [
+    { number:'911',              name:'Emergency Services',          desc:'Police, Fire, Medical — all emergencies',               cat:'emergency', priority:true  },
+    { number:'988',              name:'Suicide & Crisis Lifeline',   desc:'Mental health & suicide crisis support (24/7)',         cat:'crisis'    },
+    { number:'1-800-222-1222',   name:'Poison Control Center',       desc:'Poisoning & overdose emergencies (24/7)',               cat:'medical'   },
+    { number:'1-800-RED-CROSS',  name:'American Red Cross',          desc:'Disaster relief, blood services & shelters',           cat:'disaster'  },
+    { number:'1-800-621-FEMA',   name:'FEMA Disaster Helpline',      desc:'Federal Emergency Management Agency assistance',       cat:'disaster'  },
+    { number:'1-877-568-3317',   name:'US Coast Guard (SAR)',        desc:'Maritime search & rescue emergencies',                 cat:'emergency' },
+    { number:'1-866-444-3272',   name:'OSHA Emergency Line',         desc:'Workplace accidents, hazardous materials',             cat:'safety'    },
+    { number:'1-800-422-4453',   name:'Child Abuse Hotline',         desc:'National child abuse reporting & crisis support',      cat:'crisis'    },
+    { number:'1-800-799-7233',   name:'Domestic Violence Hotline',   desc:'Domestic violence support & safety planning (24/7)',   cat:'crisis'    },
+    { number:'1-800-ALCOHOL',    name:'Substance Abuse Helpline',    desc:'SAMHSA — mental health & substance crisis',            cat:'crisis'    },
+    { number:'211',              name:'Community Services (211)',     desc:'Local health, shelter & social service referrals',     cat:'disaster'  },
+    { number:'311',              name:'Non-Emergency City Services', desc:'City services, non-urgent police reports',             cat:'safety'    },
+    { number:'1-800-273-8255',   name:'Veterans Crisis Line',        desc:'Support for veterans in emotional crisis',             cat:'crisis'    },
+    { number:'1-800-426-2673',   name:'National Burn Info Hotline',  desc:'Burn injury guidance & treatment information',         cat:'medical'   },
+  ],
+  uk: [
+    { number:'999',              name:'Emergency Services',          desc:'Police, Fire, Ambulance, Coastguard',                  cat:'emergency', priority:true  },
+    { number:'112',              name:'EU Emergency Number',         desc:'Also works in UK — all emergency services',            cat:'emergency' },
+    { number:'111',              name:'NHS Non-Emergency Medical',   desc:'Medical advice when not life-threatening',             cat:'medical'   },
+    { number:'116 123',          name:'Samaritans',                  desc:'Emotional support & suicide crisis (24/7)',            cat:'crisis'    },
+    { number:'116 000',          name:'Missing Children Hotline',    desc:'Reporting missing children across Europe',             cat:'safety'    },
+    { number:'0800 111 999',     name:'Gas Emergency (National Grid)',desc:'Gas leaks & carbon monoxide emergencies',             cat:'safety'    },
+    { number:'105',              name:'Power Cut (National Grid)',   desc:'Electricity power cut reporting',                      cat:'safety'    },
+    { number:'0345 121 2021',    name:'Environment Agency Flood',    desc:'Flood incident reporting & warning line',              cat:'disaster'  },
+    { number:'0808 2000 247',    name:'National Domestic Violence',  desc:'24-hour domestic abuse freephone helpline',           cat:'crisis'    },
+    { number:'0300 123 3393',    name:'Mind Mental Health',          desc:'Mental health information & signposting',              cat:'crisis'    },
+    { number:'0800 055 6999',    name:'British Red Cross',           desc:'Disaster response & emergency support services',       cat:'disaster'  },
+  ],
+  ca: [
+    { number:'911',              name:'Emergency Services',          desc:'Police, Fire, Medical — all emergencies',              cat:'emergency', priority:true  },
+    { number:'988',              name:'Suicide Crisis Helpline',     desc:'Canada-wide mental health crisis support (24/7)',      cat:'crisis'    },
+    { number:'1-800-668-6868',   name:'Kids Help Phone',             desc:'Youth mental health crisis & counselling',             cat:'crisis'    },
+    { number:'1-800-267-6245',   name:'Canadian Red Cross',          desc:'Disaster relief & humanitarian assistance',           cat:'disaster'  },
+    { number:'1-613-996-2353',   name:'Armed Forces Emergency',      desc:'Canadian Armed Forces emergency coordination',        cat:'emergency' },
+    { number:'1-800-267-2001',   name:'Environment Canada Weather',  desc:'Severe weather & environmental emergencies',          cat:'disaster'  },
+    { number:'1-613-990-2309',   name:'Govt Operations Centre',      desc:'Federal emergency management coordination',           cat:'disaster'  },
+    { number:'1-800-387-0660',   name:'Poison Control Ontario',      desc:'Poisoning emergencies — Ontario region',              cat:'medical'   },
+    { number:'1-866-484-8484',   name:'Trans Mountain Pipeline',     desc:'Pipeline emergency reporting',                        cat:'safety'    },
+  ],
+  au: [
+    { number:'000',              name:'Emergency Services',          desc:'Police, Fire, Ambulance — all emergencies',           cat:'emergency', priority:true  },
+    { number:'112',              name:'Mobile Emergency',            desc:'Works even without signal on any network',            cat:'emergency' },
+    { number:'13 11 14',         name:'Lifeline Australia',          desc:'Mental health & suicide crisis support (24/7)',       cat:'crisis'    },
+    { number:'1800 022 222',     name:'Poison Information Centre',   desc:'Poisoning & overdose emergencies (24/7)',             cat:'medical'   },
+    { number:'132 500',          name:'State Emergency Service',     desc:'Floods, storms, tsunami & rescue operations',        cat:'disaster'  },
+    { number:'1800 737 732',     name:'1800RESPECT',                 desc:'Domestic violence & sexual assault support',         cat:'crisis'    },
+    { number:'1300 22 4636',     name:'Beyond Blue',                 desc:'Anxiety, depression & mental health support',        cat:'crisis'    },
+    { number:'1800 240 400',     name:'Australian Red Cross',        desc:'Disaster recovery & humanitarian services',          cat:'disaster'  },
+    { number:'106',              name:'Emergency TTY (Deaf/HoH)',    desc:'Text-based emergency line for hearing-impaired',      cat:'emergency' },
+    { number:'13 25 00',         name:'Rural Fire Service',          desc:'Bush fire & rural fire emergency coordination',       cat:'disaster'  },
+  ],
+  in: [
+    { number:'112',              name:'National Emergency Number',   desc:'Police, Fire & Ambulance — all emergencies',         cat:'emergency', priority:true  },
+    { number:'100',              name:'Police',                      desc:'Indian Police emergency line',                       cat:'emergency' },
+    { number:'101',              name:'Fire Brigade',                desc:'Fire emergency & rescue services',                   cat:'emergency' },
+    { number:'102',              name:'Ambulance',                   desc:'Medical emergency ambulance services',               cat:'medical'   },
+    { number:'108',              name:'Emergency Ambulance (States)',desc:'Emergency ambulance — many Indian states',           cat:'medical'   },
+    { number:'1078',             name:'Flood Control Room',          desc:'Flood & disaster emergency control',                 cat:'disaster'  },
+    { number:'1800-180-1104',    name:'Earthquake Helpline',         desc:'National earthquake disaster helpline',              cat:'disaster'  },
+    { number:'9152987821',       name:'iCall Mental Health',         desc:'Psychological counselling & crisis support',         cat:'crisis'    },
+    { number:'1800-11-0031',     name:'Vandrevala Foundation',       desc:'Mental health 24/7 helpline',                        cat:'crisis'    },
+    { number:'1800-120-0077',    name:'Women Helpline',              desc:'National women safety & crisis helpline',            cat:'safety'    },
+    { number:'1800-180-5522',    name:'Poison Control (AIIMS)',      desc:'All India Institute of Medical Sciences',            cat:'medical'   },
+    { number:'14567',            name:'Senior Citizen Helpline',     desc:'Elderly distress & welfare assistance',              cat:'safety'    },
+  ],
+  eu: [
+    { number:'112',              name:'European Emergency Number',   desc:'Pan-EU emergency number — police, fire, ambulance',  cat:'emergency', priority:true  },
+    { number:'110',              name:'Police — Germany (Polizei)',  desc:'German police emergency line',                       cat:'emergency' },
+    { number:'112',              name:'Fire/Ambulance — Germany',    desc:'German fire brigade & ambulance (Feuerwehr)',        cat:'emergency' },
+    { number:'15',               name:'SAMU Ambulance — France',     desc:'Medical emergency ambulance — France',              cat:'medical'   },
+    { number:'17',               name:'Police — France',             desc:'Police Nationale emergency line',                   cat:'emergency' },
+    { number:'18',               name:'Fire — France (Pompiers)',    desc:'French fire brigade',                               cat:'emergency' },
+    { number:'118',              name:'Ambulance — Italy',           desc:'Emergency medical services — Italy',                cat:'medical'   },
+    { number:'115',              name:'Fire — Italy',                desc:'Vigili del Fuoco — Italian fire brigade',           cat:'emergency' },
+    { number:'112',              name:'Police — Spain (GNR)',        desc:'Guardia Civil / National Police — Spain',           cat:'emergency' },
+    { number:'061',              name:'Medical — Spain',             desc:'Emergency medical services — Spain',                cat:'medical'   },
+    { number:'166',              name:'Coastguard — Greece',         desc:'Hellenic Coast Guard — maritime emergencies',       cat:'emergency' },
+    { number:'116 123',          name:'Crisis Line (Pan-EU)',        desc:'Mental health crisis support — multiple EU nations', cat:'crisis'   },
+  ],
+  intl: [
+    { number:'+41-22-739-8111',  name:'ICRC — Red Cross',           desc:'International Committee of the Red Cross',           cat:'disaster'  },
+    { number:'+1-212-963-1234',  name:'United Nations HQ',          desc:'Global humanitarian coordination & crisis response', cat:'disaster'  },
+    { number:'+41-22-791-2111',  name:'WHO',                        desc:'World Health Organization — global health crises',   cat:'medical'   },
+    { number:'+41-22-730-8111',  name:'UNHCR',                      desc:'UN Refugee Agency — displacement & refugee crises', cat:'disaster'  },
+    { number:'+1-212-686-7070',  name:'UNICEF',                     desc:'Child emergencies & humanitarian response',          cat:'disaster'  },
+    { number:'+41-22-748-2626',  name:'Médecins Sans Frontières',   desc:'Doctors Without Borders — medical emergencies',      cat:'medical'   },
+    { number:'121.5 MHz',        name:'Aviation Distress Frequency',desc:'International aviation emergency channel (ELT)',     cat:'emergency' },
+    { number:'Channel 16 VHF',   name:'Maritime Distress Channel',  desc:'International maritime emergency radio frequency',   cat:'emergency' },
+    { number:'2182 kHz',         name:'Maritime SSB Distress',      desc:'HF radio maritime distress frequency',              cat:'emergency' },
+    { number:'+1-800-407-4747',  name:'US Embassy Overseas',        desc:'US citizens abroad emergency contact',              cat:'safety'    },
+    { number:'+44-20-7008-1500', name:'UK FCDO Helpline',           desc:'British nationals in distress abroad',              cat:'safety'    },
+  ],
+};
+
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+let currentRegion = 'us';
+let currentCat    = 'all';
+let searchQuery   = '';
+
+/* ════════════════════════════════════════════
+   RENDER
+════════════════════════════════════════════ */
+function catBadgeClass(cat) {
+  return { emergency:'cat-emergency', medical:'cat-medical', crisis:'cat-crisis',
+           disaster:'cat-disaster',   safety:'cat-safety' }[cat] || '';
+}
+function catLabel(cat) {
+  return { emergency:'Emergency', medical:'Medical', crisis:'Crisis Support',
+           disaster:'Disaster', safety:'Safety' }[cat] || cat;
+}
+
+function renderCards() {
+  const grid   = document.getElementById('contactsGrid');
+  const noRes  = document.getElementById('noResults');
+  const count  = document.getElementById('resultCount');
+  const data   = CONTACTS[currentRegion] || [];
+
+  const filtered = data.filter(c => {
+    const matchCat  = currentCat === 'all' || c.cat === currentCat;
+    const q         = searchQuery.toLowerCase();
+    const matchSrch = !q || c.number.toLowerCase().includes(q)
+                          || c.name.toLowerCase().includes(q)
+                          || c.desc.toLowerCase().includes(q);
+    return matchCat && matchSrch;
+  });
+
+  grid.innerHTML = '';
+  if (filtered.length === 0) {
+    noRes.style.display = 'block';
+    count.textContent   = 'No contacts found';
+  } else {
+    noRes.style.display = 'none';
+    count.textContent   = `${filtered.length} contact${filtered.length !== 1 ? 's' : ''}`;
+    filtered.forEach(c => {
+      const col = document.createElement('div');
+      col.className = 'col-sm-6 col-lg-4';
+      col.innerHTML = `
+        <div class="contact-card ${c.priority ? 'priority-card' : ''}">
+          ${c.priority ? '<div class="text-danger small fw-bold mb-1" style="font-size:.68rem;letter-spacing:.08em;">⚡ PRIMARY EMERGENCY</div>' : ''}
+          <div class="contact-number">${c.number}</div>
+          <div class="contact-name">${c.name}</div>
+          <div class="contact-desc">${c.desc}</div>
+          <div class="contact-card-footer">
+            <span class="contact-cat-badge ${catBadgeClass(c.cat)}">${catLabel(c.cat)}</span>
+            <button class="copy-btn" onclick="copyNumber(this, '${c.number.replace(/'/g,"\\'")}')">
+              <i class="bi bi-clipboard me-1"></i>Copy
+            </button>
+          </div>
+        </div>`;
+      grid.appendChild(col);
+    });
+  }
+}
+
+/* ════════════════════════════════════════════
+   COPY NUMBER
+════════════════════════════════════════════ */
+function copyNumber(btn, num) {
+  navigator.clipboard.writeText(num).then(() => {
+    btn.innerHTML = '<i class="bi bi-check-circle-fill me-1"></i>Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '<i class="bi bi-clipboard me-1"></i>Copy';
+      btn.classList.remove('copied');
+    }, 2000);
+  });
+}
+
+/* ════════════════════════════════════════════
+   EVENT LISTENERS
+════════════════════════════════════════════ */
+// Region tabs
+document.querySelectorAll('.region-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.region-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    currentRegion = btn.dataset.region;
+    searchQuery = '';
+    document.getElementById('contactSearch').value = '';
+    renderCards();
+  });
+});
+
+// Category chips
+document.querySelectorAll('.cat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCat = chip.dataset.cat;
+    renderCards();
+  });
+});
+
+// Search
+let searchTimer;
+document.getElementById('contactSearch').addEventListener('input', e => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    searchQuery = e.target.value.trim();
+    renderCards();
+  }, 180);
+});
+
+/* ── Initial render ── */
+renderCards();
+</script>
+{% endblock %}
