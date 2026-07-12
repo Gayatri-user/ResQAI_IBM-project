@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% block title %}Disaster Resource Manager — ResQAI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center gap-3 mb-4">
+    <div class="resq-feature-icon-lg bg-warning-subtle">
+      <i class="bi bi-boxes text-warning fs-2"></i>
+    </div>
+    <div>
+      <h2 class="fw-bold mb-0">Disaster Resource Manager</h2>
+      <p class="text-muted small mb-0">AI-driven shelter, supply, and logistics planning for disaster-affected populations</p>
+    </div>
+  </div>
+
+  <div class="alert resq-alert-warning mb-4">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <strong>Resource plans must be validated by qualified logistics and emergency management professionals.</strong> Coordinate with FEMA, Red Cross, or your regional EOC for actual resource deployment.
+  </div>
+
+  <div class="row g-4">
+    <!-- Resource Plan Form -->
+    <div class="col-lg-5">
+      <div class="resq-card p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="bi bi-robot me-2 text-warning"></i>AI Resource Plan Generator</h5>
+        <p class="text-secondary small mb-3">Enter disaster parameters to generate a structured resource management and shelter logistics plan.</p>
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-semibold">Disaster Type <span class="text-danger">*</span></label>
+          <select id="resourceDisasterType" class="form-select resq-input">
+            <option value="">— Select disaster type —</option>
+            <option>Earthquake</option>
+            <option>Flash Flood</option>
+            <option>Hurricane / Cyclone</option>
+            <option>Wildfire</option>
+            <option>Tornado</option>
+            <option>Tsunami</option>
+            <option>Hazardous Material Spill</option>
+            <option>Industrial Explosion</option>
+            <option>Structural Collapse</option>
+            <option>Power Grid Failure</option>
+            <option>Pandemic / Disease Outbreak</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-semibold">Estimated Affected Population</label>
+          <input type="text" id="affectedCount" class="form-control resq-input" placeholder="e.g., 2,000 displaced persons" />
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-semibold">Planning Duration (days)</label>
+          <select id="durationDays" class="form-select resq-input">
+            <option value="1">1 day (immediate)</option>
+            <option value="3" selected>3 days</option>
+            <option value="7">7 days</option>
+            <option value="14">14 days</option>
+            <option value="30">30 days</option>
+          </select>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-semibold">Available Resources (optional)</label>
+          <textarea id="availableResources" class="form-control resq-input" rows="3" placeholder="e.g., 2 warehouse facilities, 50 volunteer responders, 10 trucks, Red Cross shelter kits..."></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label text-muted small fw-semibold">Quick scenarios:</label>
+          <div class="d-grid gap-2">
+            <button class="btn btn-sm resq-scenario-btn text-start" data-dtype="Earthquake" data-count="10,000 displaced residents" data-days="7">
+              <i class="bi bi-tsunami text-warning me-2"></i>Post-Earthquake — Mass Displacement
+            </button>
+            <button class="btn btn-sm resq-scenario-btn text-start" data-dtype="Hurricane / Cyclone" data-count="5,000 evacuees in shelters" data-days="14">
+              <i class="bi bi-tornado text-info me-2"></i>Hurricane Shelter — 14-day Plan
+            </button>
+            <button class="btn btn-sm resq-scenario-btn text-start" data-dtype="Flash Flood" data-count="800 displaced families" data-days="3">
+              <i class="bi bi-water text-info me-2"></i>Flood Relief — 3-day Immediate Response
+            </button>
+            <button class="btn btn-sm resq-scenario-btn text-start" data-dtype="Power Grid Failure" data-count="20,000 affected residents" data-days="7">
+              <i class="bi bi-lightning text-warning me-2"></i>Power Outage — Community Support
+            </button>
+          </div>
+        </div>
+
+        <button id="generateResourceBtn" class="btn btn-warning w-100 fw-bold text-dark">
+          <span id="resourceBtnText"><i class="bi bi-boxes me-2"></i>Generate Resource Plan</span>
+          <span id="resourceBtnSpinner" class="d-none"><span class="spinner-border spinner-border-sm me-1"></span>Generating...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Resource Plan Output -->
+    <div class="col-lg-7">
+      <div class="resq-card p-4 h-100">
+        <h5 class="fw-bold text-white mb-3"><i class="bi bi-clipboard2-check me-2 text-warning"></i>AI Resource Management Plan</h5>
+        <div id="resourceOutput">
+          <div class="resq-empty-state text-center py-5">
+            <i class="bi bi-boxes text-warning fs-1 d-block mb-3 opacity-50"></i>
+            <p class="text-muted">Select a disaster type and enter population details to generate a logistics and resource plan.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Static Resource Reference Cards -->
+  <div class="mt-5">
+    <h4 class="fw-bold mb-4 text-white"><i class="bi bi-bookmark-star me-2 text-warning"></i>Resource Management Quick Reference</h4>
+    <div class="row g-4">
+
+      <div class="col-md-6">
+        <div class="resq-card p-4">
+          <h6 class="fw-bold text-warning mb-3"><i class="bi bi-droplet me-2"></i>Water & Food Standards</h6>
+          <ul class="text-secondary small mb-0">
+            <li><strong class="text-white">Water:</strong> Minimum 15 litres per person per day (drinking, cooking, sanitation).</li>
+            <li><strong class="text-white">Drinking water:</strong> 3–5 litres per person per day minimum.</li>
+            <li><strong class="text-white">Food:</strong> 2,100 kcal per adult per day; prioritise non-perishable, easy-to-prepare foods.</li>
+            <li><strong class="text-white">Distribution:</strong> Set up dedicated distribution points; log all distributions.</li>
+            <li><strong class="text-white">Special diets:</strong> Identify diabetics, infants, pregnant women, allergy sufferers.</li>
+            <li><strong class="text-white">Sanitation:</strong> 1 toilet per 20 persons minimum; female-only facilities required.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="resq-card p-4">
+          <h6 class="fw-bold text-info mb-3"><i class="bi bi-building me-2"></i>Emergency Shelter Standards</h6>
+          <ul class="text-secondary small mb-0">
+            <li><strong class="text-white">Space:</strong> 3.5 m² per person minimum (covered sleeping area).</li>
+            <li><strong class="text-white">Registration:</strong> Register all displaced persons on arrival for tracking.</li>
+            <li><strong class="text-white">Security:</strong> Designate safe areas for women, children, and vulnerable persons.</li>
+            <li><strong class="text-white">Medical:</strong> Establish first aid/triage station; coordinate EMS access.</li>
+            <li><strong class="text-white">Communication:</strong> Post emergency numbers, shelter rules, and daily briefings.</li>
+            <li><strong class="text-white">Pets:</strong> Designate a separate area — many evacuees will not leave without pets.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="resq-card p-4">
+          <h6 class="fw-bold text-success mb-3"><i class="bi bi-people me-2"></i>Volunteer Coordination</h6>
+          <ul class="text-secondary small mb-0">
+            <li>Register and credential all volunteers before deployment.</li>
+            <li>Assign team leaders for each functional area (food, shelter, logistics).</li>
+            <li>Use shift schedules — prevent volunteer burnout over multi-day operations.</li>
+            <li>Provide safety briefings for all volunteers before they enter the field.</li>
+            <li>Establish a volunteer coordination hub separate from the main shelter.</li>
+            <li>Coordinate with established organisations (Red Cross, FEMA, CERT teams).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="resq-card p-4">
+          <h6 class="fw-bold text-danger mb-3"><i class="bi bi-truck me-2"></i>Supply Chain & Logistics</h6>
+          <ul class="text-secondary small mb-0">
+            <li>Identify and pre-position supplies before a predicted disaster where possible.</li>
+            <li>Establish a central warehouse with dedicated receiving and distribution teams.</li>
+            <li>Track all incoming and outgoing supplies with a manifest log.</li>
+            <li>Prioritise fuel, generators, and communications equipment for sustained ops.</li>
+            <li>Coordinate with local businesses for emergency procurement agreements.</li>
+            <li>Establish air and ground transport corridors with emergency management EOC.</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const resourceDisasterType = document.getElementById('resourceDisasterType');
+const generateResourceBtn = document.getElementById('generateResourceBtn');
+const resourceBtnText = document.getElementById('resourceBtnText');
+const resourceBtnSpinner = document.getElementById('resourceBtnSpinner');
+const resourceOutput = document.getElementById('resourceOutput');
+
+document.querySelectorAll('.resq-scenario-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (btn.dataset.dtype) resourceDisasterType.value = btn.dataset.dtype;
+    if (btn.dataset.count) document.getElementById('affectedCount').value = btn.dataset.count;
+    if (btn.dataset.days) document.getElementById('durationDays').value = btn.dataset.days;
+  });
+});
+
+generateResourceBtn.addEventListener('click', async () => {
+  const disaster_type = resourceDisasterType.value.trim();
+  if (!disaster_type) {
+    resourceDisasterType.classList.add('is-invalid');
+    return;
+  }
+  resourceDisasterType.classList.remove('is-invalid');
+
+  const affected_count = document.getElementById('affectedCount').value.trim();
+  const duration_days = document.getElementById('durationDays').value;
+  const available_resources = document.getElementById('availableResources').value.trim();
+
+  resourceBtnText.classList.add('d-none');
+  resourceBtnSpinner.classList.remove('d-none');
+  generateResourceBtn.disabled = true;
+
+  resourceOutput.innerHTML = `<div class="text-center py-4"><div class="spinner-border text-warning"></div><p class="text-muted mt-2 small">AI is generating your resource management plan...</p></div>`;
+
+  try {
+    const res = await fetch('/api/resource-plan', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({disaster_type, affected_count, duration_days, available_resources})
+    });
+    const data = await res.json();
+    if (data.plan) {
+      resourceOutput.innerHTML = `
+        <div class="resq-guidance-box">
+          <div class="d-flex align-items-center gap-2 mb-3">
+            <i class="bi bi-robot text-warning"></i>
+            <small class="text-muted">AI-generated plan — coordinate with your regional EOC for actual deployment</small>
+          </div>
+          <div class="resq-guidance-text">${data.plan.replace(/\n/g, '<br>')}</div>
+        </div>
+        <div class="alert resq-alert-info mt-3 small">
+          <i class="bi bi-info-circle me-1"></i>Validate all resource estimates with your logistics team and coordinate with FEMA, Red Cross, or regional emergency management authorities before deployment.
+        </div>`;
+    } else {
+      resourceOutput.innerHTML = `<div class="alert alert-danger">${data.error || 'An error occurred.'}</div>`;
+    }
+  } catch (e) {
+    resourceOutput.innerHTML = `<div class="alert alert-danger"><i class="bi bi-wifi-off me-2"></i>Network error. Please try again.</div>`;
+  } finally {
+    resourceBtnText.classList.remove('d-none');
+    resourceBtnSpinner.classList.add('d-none');
+    generateResourceBtn.disabled = false;
+  }
+});
+
+resourceDisasterType.addEventListener('change', () => resourceDisasterType.classList.remove('is-invalid'));
+</script>
+{% endblock %}
