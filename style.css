@@ -1,0 +1,605 @@
+/* ==========================================================================
+   ResQAI — Intelligent Disaster Response & Rescue Coordination Platform
+   Global Stylesheet
+   Covers: CSS custom properties, base resets, layout, navbar, footer,
+   shared component classes, and every page-specific resq-* class used
+   across all 9 templates.
+   ========================================================================== */
+
+/* ──────────────────────────────────────────────────────────────────────────
+   1. CSS CUSTOM PROPERTIES (Design Tokens)
+   ────────────────────────────────────────────────────────────────────────── */
+:root {
+  --resq-bg:            #0d1117;
+  --resq-surface:       #161b22;
+  --resq-surface-2:     #1c2128;
+  --resq-border:        #21262d;
+  --resq-border-hover:  #444c56;
+  --resq-text:          #e6edf3;
+  --resq-muted:         #8b949e;
+  --resq-muted-2:       #7d8590;
+  --resq-danger:        #dc3545;
+  --resq-danger-glow:   rgba(220, 53, 69, 0.15);
+  --resq-success:       #34d399;
+  --resq-warning:       #ffc107;
+  --resq-info:          #0dcaf0;
+  --resq-purple:        #a78bfa;
+  --resq-purple-glow:   rgba(167, 139, 250, 0.12);
+  --resq-radius:        10px;
+  --resq-radius-sm:     6px;
+  --resq-radius-lg:     14px;
+  --resq-transition:    0.18s ease;
+  --resq-font:          -apple-system, "Segoe UI", system-ui, sans-serif;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   2. BASE RESETS & GLOBAL
+   ────────────────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--resq-bg);
+  color: var(--resq-text);
+  font-family: var(--resq-font);
+  font-size: 15px;
+  line-height: 1.65;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main { flex: 1; }
+
+a { color: var(--resq-danger); transition: color var(--resq-transition); }
+a:hover { color: #f77; }
+
+code {
+  background: var(--resq-surface-2);
+  color: var(--resq-purple);
+  padding: .1em .35em;
+  border-radius: var(--resq-radius-sm);
+  font-size: .88em;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--resq-bg); }
+::-webkit-scrollbar-thumb { background: var(--resq-border-hover); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #6e7681; }
+
+::selection { background: var(--resq-danger-glow); color: #fff; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   3. NAVBAR
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-navbar {
+  background: rgba(13, 17, 23, 0.97) !important;
+  border-bottom: 1px solid var(--resq-border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding-top: .6rem;
+  padding-bottom: .6rem;
+}
+
+.resq-navbar .nav-link {
+  color: var(--resq-muted) !important;
+  font-size: .85rem;
+  font-weight: 500;
+  padding: .35rem .65rem !important;
+  border-radius: var(--resq-radius-sm);
+  transition: color var(--resq-transition), background var(--resq-transition);
+}
+.resq-navbar .nav-link:hover {
+  color: var(--resq-text) !important;
+  background: var(--resq-surface);
+}
+.resq-navbar .nav-link.active {
+  color: #fff !important;
+  background: var(--resq-danger-glow);
+}
+
+.resq-logo-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px; height: 34px;
+  background: var(--resq-danger-glow);
+  border: 1px solid rgba(220, 53, 69, .3);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  color: var(--resq-danger);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   4. FOOTER
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-footer {
+  background: var(--resq-surface);
+  border-top: 1px solid var(--resq-border);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   5. SHARED CARD COMPONENT  (.resq-card)
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-card {
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius-lg);
+  transition: border-color var(--resq-transition);
+}
+.resq-card:hover { border-color: var(--resq-border-hover); }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   6. FEATURE ICON CONTAINERS
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-feature-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px; height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.resq-feature-icon-lg {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px; height: 64px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+/* Bootstrap subtle bg helpers for feature icons */
+.bg-danger-subtle  { background: rgba(220, 53,  69, .12) !important; }
+.bg-success-subtle { background: rgba( 25, 135,  84, .12) !important; }
+.bg-warning-subtle { background: rgba(255, 193,   7, .12) !important; }
+.bg-info-subtle    { background: rgba( 13, 202, 240, .12) !important; }
+.bg-purple-subtle  { background: var(--resq-purple-glow)  !important; }
+.bg-secondary-subtle { background: rgba(110, 118, 129, .12) !important; }
+
+/* Purple text utility */
+.text-purple { color: var(--resq-purple) !important; }
+
+/* Disaster type quick-access buttons */
+.resq-disaster-btn {
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  color: var(--resq-muted);
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 500;
+  padding: .3rem .85rem;
+  text-decoration: none;
+  transition: all var(--resq-transition);
+}
+.resq-disaster-btn:hover {
+  background: var(--resq-danger-glow);
+  border-color: rgba(220,53,69,.4);
+  color: var(--resq-danger);
+  text-decoration: none;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   7. ALERT VARIANTS  (.resq-alert-*)
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-alert-warning {
+  background: rgba(255, 193, 7, .08);
+  border: 1px solid rgba(255, 193, 7, .3);
+  border-radius: var(--resq-radius);
+  color: var(--resq-text);
+  padding: .85rem 1.1rem;
+}
+.resq-alert-danger {
+  background: rgba(220, 53, 69, .08);
+  border: 1px solid rgba(220, 53, 69, .3);
+  border-radius: var(--resq-radius);
+  color: var(--resq-text);
+  padding: .85rem 1.1rem;
+}
+.resq-alert-info {
+  background: rgba(13, 202, 240, .08);
+  border: 1px solid rgba(13, 202, 240, .25);
+  border-radius: var(--resq-radius);
+  color: var(--resq-text);
+  padding: .85rem 1.1rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   8. FORM INPUTS  (.resq-input)
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-input,
+.resq-input.form-control,
+.resq-input.form-select {
+  background: var(--resq-surface-2) !important;
+  border: 1px solid var(--resq-border) !important;
+  border-radius: var(--resq-radius-sm) !important;
+  color: var(--resq-text) !important;
+  font-size: .875rem;
+  transition: border-color var(--resq-transition), box-shadow var(--resq-transition);
+}
+.resq-input::placeholder { color: var(--resq-muted-2) !important; }
+.resq-input:focus {
+  background: var(--resq-surface) !important;
+  border-color: var(--resq-danger) !important;
+  box-shadow: 0 0 0 3px var(--resq-danger-glow) !important;
+  color: var(--resq-text) !important;
+  outline: none;
+}
+.resq-input option {
+  background: var(--resq-surface);
+  color: var(--resq-text);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   9. SCENARIO / REGION TABS  (.resq-scenario-tabs)
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-scenario-tabs .nav-link {
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  color: var(--resq-muted);
+  border-radius: var(--resq-radius-sm) !important;
+  font-size: .82rem;
+  font-weight: 600;
+  padding: .4rem .85rem;
+  transition: all var(--resq-transition);
+}
+.resq-scenario-tabs .nav-link:hover {
+  background: var(--resq-surface-2);
+  border-color: var(--resq-border-hover);
+  color: var(--resq-text);
+}
+.resq-scenario-tabs .nav-link.active {
+  background: var(--resq-danger);
+  border-color: var(--resq-danger);
+  color: #fff;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   10. HOME PAGE
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-hero {
+  background: radial-gradient(ellipse at 70% 50%, rgba(220,53,69,.08) 0%, transparent 60%),
+              linear-gradient(180deg, #0d1117 0%, #110a0a 100%);
+  border-bottom: 1px solid var(--resq-border);
+  min-height: 480px;
+  padding: 4rem 0;
+}
+
+.resq-hero-graphic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, rgba(220,53,69,.1) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.resq-hero-icon {
+  font-size: 10rem;
+  opacity: .15;
+  color: var(--resq-danger);
+}
+
+.resq-badge-alert {
+  background: rgba(220,53,69,.12);
+  border: 1px solid rgba(220,53,69,.3);
+  color: var(--resq-danger);
+  padding: .3rem .9rem;
+  border-radius: 20px;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+}
+
+.resq-alert-banner {
+  background: rgba(220,53,69,.06);
+  border-bottom: 1px solid rgba(220,53,69,.2);
+  color: var(--resq-muted);
+  font-size: .82rem;
+}
+
+/* Home feature grid cards */
+.resq-card.h-100 {
+  transition: transform var(--resq-transition), border-color var(--resq-transition);
+}
+.resq-card.h-100:hover {
+  transform: translateY(-3px);
+  border-color: var(--resq-border-hover);
+}
+
+/* Stats section */
+.resq-stats-section { background: var(--resq-surface); border-top: 1px solid var(--resq-border); border-bottom: 1px solid var(--resq-border); }
+.resq-stat-card {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+}
+
+/* CTA card */
+.resq-cta-card {
+  background: linear-gradient(135deg, #1a0808 0%, var(--resq-surface) 100%);
+  border: 1px solid rgba(220,53,69,.2);
+  border-radius: var(--resq-radius-lg);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   11. AI CHAT ASSISTANT
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-chat-container {
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius-lg);
+  overflow: hidden;
+}
+
+.resq-chat-messages {
+  height: 440px;
+  overflow-y: auto;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  scroll-behavior: smooth;
+}
+
+/* Chat message rows */
+.resq-msg { display: flex; align-items: flex-start; gap: .75rem; }
+.resq-msg-user { flex-direction: row-reverse; }
+
+.resq-msg-avatar {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .9rem;
+  flex-shrink: 0;
+  background: var(--resq-danger-glow);
+  border: 1px solid rgba(220,53,69,.25);
+  color: var(--resq-danger);
+}
+.resq-user-avatar {
+  background: rgba(13,202,240,.1);
+  border-color: rgba(13,202,240,.2);
+  color: var(--resq-info);
+}
+
+.resq-msg-bubble {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+  padding: .75rem 1rem;
+  max-width: 80%;
+  font-size: .875rem;
+  line-height: 1.6;
+  color: var(--resq-text);
+}
+.resq-user-bubble {
+  background: rgba(13,202,240,.07);
+  border-color: rgba(13,202,240,.18);
+}
+
+.resq-msg-time {
+  font-size: .68rem;
+  color: var(--resq-muted-2);
+  margin-top: .35rem;
+}
+
+/* Quick prompt buttons */
+.resq-quick-btn {
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  color: var(--resq-muted);
+  border-radius: 20px;
+  font-size: .75rem;
+  font-weight: 500;
+  padding: .3rem .8rem;
+  transition: all var(--resq-transition);
+}
+.resq-quick-btn:hover {
+  background: var(--resq-danger-glow);
+  border-color: rgba(220,53,69,.4);
+  color: var(--resq-danger);
+}
+
+/* Chat input area */
+.resq-chat-input-area .form-control.resq-input {
+  border-radius: var(--resq-radius-sm) 0 0 var(--resq-radius-sm) !important;
+  resize: none;
+}
+
+/* Typing indicator */
+.resq-typing { display: flex; align-items: center; gap: 4px; height: 18px; }
+.resq-typing span {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--resq-muted);
+  animation: typing-bounce .9s ease-in-out infinite;
+}
+.resq-typing span:nth-child(2) { animation-delay: .15s; }
+.resq-typing span:nth-child(3) { animation-delay: .3s; }
+
+@keyframes typing-bounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: .4; }
+  40% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   12. EVACUATION / RESOURCE PAGES (scenario buttons, guidance output)
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-scenario-btn {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  color: var(--resq-muted);
+  border-radius: var(--resq-radius-sm);
+  font-size: .82rem;
+  padding: .45rem .75rem;
+  transition: all var(--resq-transition);
+  width: 100%;
+  text-align: left;
+}
+.resq-scenario-btn:hover {
+  background: rgba(220,53,69,.07);
+  border-color: rgba(220,53,69,.3);
+  color: var(--resq-text);
+}
+
+.resq-empty-state { color: var(--resq-muted-2); }
+
+.resq-guidance-box {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+  padding: 1.25rem;
+}
+.resq-guidance-text {
+  color: var(--resq-text);
+  font-size: .875rem;
+  line-height: 1.75;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   13. SOS GENERATOR
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-sos-banner {
+  background: linear-gradient(135deg, #1a0505 0%, #0d1117 100%);
+  border: 1px solid rgba(220,53,69,.3);
+  border-radius: var(--resq-radius-lg);
+}
+
+.resq-morse-display {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+}
+.resq-morse-code {
+  font-family: "Courier New", Courier, monospace;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--resq-warning);
+  letter-spacing: .06em;
+}
+.resq-morse-card {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius-sm);
+}
+
+.resq-sos-message {
+  background: rgba(220,53,69,.05);
+  border: 1px solid rgba(220,53,69,.25);
+  border-radius: var(--resq-radius);
+}
+.resq-sos-header { font-size: .82rem; }
+.resq-sos-text {
+  font-size: .875rem;
+  line-height: 1.7;
+  color: var(--resq-text);
+}
+
+.resq-signal-card {
+  background: var(--resq-surface-2);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+  transition: border-color var(--resq-transition);
+}
+.resq-signal-card:hover { border-color: var(--resq-border-hover); }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   14. EMERGENCY CHECKLIST
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: .65rem;
+  padding: .5rem .25rem;
+  border-radius: var(--resq-radius-sm);
+  cursor: pointer;
+  transition: background var(--resq-transition);
+  font-size: .84rem;
+  color: var(--resq-muted);
+  line-height: 1.45;
+  margin-bottom: .1rem;
+}
+.resq-check-item:hover { background: var(--resq-surface-2); color: var(--resq-text); }
+.resq-check-item input[type="checkbox"] {
+  flex-shrink: 0;
+  margin-top: .15em;
+  accent-color: var(--resq-danger);
+  width: 15px; height: 15px;
+  cursor: pointer;
+}
+.resq-check-item:has(input:checked) span {
+  text-decoration: line-through;
+  color: var(--resq-muted-2);
+  opacity: .65;
+}
+
+.resq-progress { background: var(--resq-surface-2); border-radius: 99px; }
+
+/* ──────────────────────────────────────────────────────────────────────────
+   15. ABOUT PAGE — shared with index
+   ────────────────────────────────────────────────────────────────────────── */
+.resq-feature-row {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  background: var(--resq-surface);
+  border: 1px solid var(--resq-border);
+  border-radius: var(--resq-radius);
+  transition: border-color var(--resq-transition);
+}
+.resq-feature-row:hover { border-color: var(--resq-border-hover); }
+
+.resq-step-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--resq-danger-glow);
+  border: 2px solid var(--resq-danger);
+  color: var(--resq-danger);
+  font-size: 1.2rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   16. LOADING / SPINNER OVERLAY
+   ────────────────────────────────────────────────────────────────────────── */
+.spinner-border {
+  border-color: var(--resq-danger) transparent transparent transparent !important;
+}
+.spinner-border-sm {
+  width: 1rem; height: 1rem; border-width: .18em;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   17. BOOTSTRAP OVERRIDE — form-check radio
+   ────────────────────────────────────────────────────────────────────────── */
+.form-check-input {
+  background-color: var(--resq-surface-2);
+  border-color: var(--resq-border-hover);
+}
+.form-check-input:checked {
+  background-color: var(--resq-danger);
+  border-color: var(--resq-danger);
+}
+.form-check-input:focus {
+  box-shadow: 0 0 0 3px var(--resq-danger-glow);
+  border-color: var(--resq-danger);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   18. RESPONSIVE UTILITIES
+   ────────────────────────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .resq-chat-messages { height: 320px; }
+  .resq-hero { min-height: auto; padding: 2.5rem 0; }
+  .resq-hero-graphic { display: none; }
+  .resq-msg-bubble { max-width: 92%; }
+}
+
+@media (max-width: 576px) {
+  .resq-scenario-tabs { gap: .3rem !important; }
+  .resq-scenario-tabs .nav-link { font-size: .75rem; padding: .3rem .6rem; }
+}
