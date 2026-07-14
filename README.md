@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # ResQAI: Agentic Disaster Response & Rescue Coordination Platform
 
 ResQAI is an enterprise-grade, agentic AI platform engineered to streamline disaster response and rescue coordination. By integrating **IBM Granite models** via **Watsonx** and leveraging the **IBM BoB** development ecosystem, this platform delivers data-driven insights in critical, high-latency environments.
@@ -160,7 +160,7 @@ Follow these steps exactly, in order.
 ### 1 — Clone the repository
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/Gayatri-user/ResQAI_IBM-project
 cd resqai
 ```
 
