@@ -1,0 +1,467 @@
+{% extends "base.html" %}
+{% block title %}About ResQAI — Intelligent Disaster Response & Rescue Coordination{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Hero banner ── */
+  .about-hero {
+    background: linear-gradient(135deg, #0d1117 0%, #161b22 60%, #1a0a0a 100%);
+    border-bottom: 1px solid #21262d;
+    padding: 4rem 0 3rem;
+    text-align: center;
+  }
+  .about-hero-shield {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 96px; height: 96px; border-radius: 50%;
+    background: rgba(220,53,69,.12);
+    border: 2px solid rgba(220,53,69,.3);
+    font-size: 3rem; margin-bottom: 1.5rem;
+  }
+
+  /* ── Stat chips ── */
+  .about-stat {
+    background: #161b22; border: 1px solid #21262d; border-radius: 10px;
+    padding: 1.25rem; text-align: center;
+  }
+  .about-stat-num { font-size: 2rem; font-weight: 800; color: #dc3545; line-height: 1; }
+  .about-stat-lbl { font-size: .75rem; color: #7d8590; margin-top: .3rem; }
+
+  /* ── How-it-works pipeline ── */
+  .pipeline { position: relative; }
+  .pipeline::before {
+    content: '';
+    position: absolute; top: 32px; left: calc(16.67% - 1px);
+    width: calc(66.67%); height: 2px;
+    background: repeating-linear-gradient(90deg, #dc3545 0, #dc3545 8px, transparent 8px, transparent 16px);
+  }
+  @media (max-width: 767px) { .pipeline::before { display: none; } }
+
+  .pipeline-step { text-align: center; position: relative; }
+  .pipeline-circle {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 1rem;
+    display: flex; align-items: center; justify-content: center;
+    border: 2px solid #dc3545; background: #161b22;
+    font-size: 1.4rem; font-weight: 800; color: #dc3545;
+    position: relative; z-index: 1;
+  }
+  .pipeline-circle i { font-size: 1.3rem; }
+
+  /* ── Tech stack pills ── */
+  .tech-pill {
+    display: inline-flex; align-items: center; gap: .5rem;
+    background: #161b22; border: 1px solid #21262d; border-radius: 8px;
+    padding: .55rem .9rem; font-size: .8rem; color: #e6edf3;
+    font-weight: 500;
+  }
+  .tech-pill i { font-size: 1rem; }
+
+  /* ── Module grid cards ── */
+  .module-card {
+    background: #161b22; border: 1px solid #21262d; border-radius: 10px;
+    padding: 1.25rem; display: flex; gap: 1rem; align-items: flex-start;
+    transition: border-color .2s;
+  }
+  .module-card:hover { border-color: #444c56; }
+  .module-card-icon {
+    flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.2rem;
+  }
+
+  /* ── FAQ accordion overrides ── */
+  .about-faq .accordion-button {
+    background: #161b22; color: #e6edf3; font-weight: 600; font-size: .9rem;
+    border: none; box-shadow: none;
+  }
+  .about-faq .accordion-button:not(.collapsed) {
+    background: #1c2128; color: #fff;
+  }
+  .about-faq .accordion-button::after { filter: invert(1); }
+  .about-faq .accordion-body {
+    background: #1c2128; color: #8b949e; font-size: .875rem; line-height: 1.7;
+  }
+  .about-faq .accordion-item {
+    background: transparent; border: 1px solid #21262d;
+    border-radius: 8px !important; overflow: hidden; margin-bottom: .5rem;
+  }
+
+  /* ── CTA banner ── */
+  .about-cta {
+    background: #161b22; border: 1px solid #21262d; border-radius: 12px;
+    padding: 2.5rem; text-align: center;
+  }
+
+  /* ── Section divider label ── */
+  .section-label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: #dc3545;
+    margin-bottom: .4rem; display: block;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section class="about-hero">
+  <div class="container">
+    <div class="about-hero-shield">
+      <i class="bi bi-shield-shaded text-danger"></i>
+    </div>
+    <span class="section-label">Intelligent Disaster Response Platform</span>
+    <h1 class="fw-bold text-white mb-3" style="font-size: clamp(1.8rem, 4vw, 2.8rem);">
+      About ResQ<span class="text-danger">AI</span>
+    </h1>
+    <p class="text-secondary mx-auto mb-4" style="max-width: 640px; font-size: 1.05rem; line-height: 1.7;">
+      ResQAI is an AI-powered disaster response and rescue coordination platform built on
+      <strong class="text-white">IBM Watsonx.ai</strong> and <strong class="text-white">Granite</strong>
+      large language models. It delivers real-time, structured guidance for disaster managers,
+      first responders, and affected communities when every second matters.
+    </p>
+    <!-- Stat row -->
+    <div class="row g-3 justify-content-center mt-2">
+      <div class="col-6 col-sm-3"><div class="about-stat"><div class="about-stat-num">8+</div><div class="about-stat-lbl">Platform Modules</div></div></div>
+      <div class="col-6 col-sm-3"><div class="about-stat"><div class="about-stat-num">24/7</div><div class="about-stat-lbl">Always Operational</div></div></div>
+      <div class="col-6 col-sm-3"><div class="about-stat"><div class="about-stat-num">5</div><div class="about-stat-lbl">AI API Endpoints</div></div></div>
+      <div class="col-6 col-sm-3"><div class="about-stat"><div class="about-stat-num">0</div><div class="about-stat-lbl">Cost to Use</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════
+     MAIN CONTENT
+════════════════════════════════════════════ -->
+<div class="container py-5">
+
+  <!-- ── Mission ── -->
+  <div class="row g-4 align-items-center mb-5">
+    <div class="col-lg-6">
+      <span class="section-label">Our Mission</span>
+      <h3 class="fw-bold text-white mb-3">Intelligent Coordination When It Matters Most</h3>
+      <p class="text-secondary mb-3">
+        Disasters are unpredictable and unforgiving. Effective response depends on fast, clear,
+        and coordinated decision-making under extreme pressure. ResQAI exists to put AI-powered
+        disaster intelligence in the hands of emergency managers, first responders, and affected
+        communities — bridging the gap between the moment a disaster strikes and the moment
+        coordinated professional response is fully mobilised.
+      </p>
+      <p class="text-secondary mb-0">
+        We believe responsible AI, anchored in safety-first design and grounded in disaster
+        management best practices, can meaningfully reduce harm during crises. Every ResQAI
+        response is shaped by expert-authored <code style="color:#a78bfa;">AGENT_INSTRUCTIONS</code>
+        that enforce factual accuracy, official-authority deference, and strict disaster-only scope.
+      </p>
+    </div>
+    <div class="col-lg-6">
+      <div class="resq-card p-4">
+        <h6 class="fw-bold text-white mb-3"><i class="bi bi-cpu me-2 text-info"></i>Technology Stack</h6>
+        <div class="d-flex flex-wrap gap-2">
+          <span class="tech-pill"><i class="bi bi-cloud-fill text-primary"></i>IBM Watsonx.ai</span>
+          <span class="tech-pill"><i class="bi bi-diamond-fill" style="color:#a78bfa;"></i>IBM Granite 13B Chat v2</span>
+          <span class="tech-pill"><i class="bi bi-braces text-warning"></i>Python Flask</span>
+          <span class="tech-pill"><i class="bi bi-layout-text-window text-info"></i>Bootstrap 5</span>
+          <span class="tech-pill"><i class="bi bi-shield-lock text-success"></i>python-dotenv</span>
+          <span class="tech-pill"><i class="bi bi-server text-secondary"></i>IBM Cloud</span>
+          <span class="tech-pill"><i class="bi bi-file-earmark-code text-warning"></i>HTML5 / CSS3 / JS</span>
+          <span class="tech-pill"><i class="bi bi-rocket-takeoff text-danger"></i>Gunicorn WSGI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── How AI Works Pipeline ── -->
+  <div class="mb-5">
+    <span class="section-label">Under the Hood</span>
+    <h4 class="fw-bold text-white mb-4">How the AI Works</h4>
+    <div class="row g-4 pipeline">
+      <div class="col-md-4 pipeline-step">
+        <div class="pipeline-circle"><i class="bi bi-keyboard"></i></div>
+        <h6 class="fw-bold text-white mb-2">1. You Describe the Disaster</h6>
+        <p class="text-secondary small">
+          Type your disaster scenario, select a evacuation situation, fill in an incident form,
+          or click a quick-prompt for your disaster type. Your input is never stored.
+        </p>
+      </div>
+      <div class="col-md-4 pipeline-step">
+        <div class="pipeline-circle"><i class="bi bi-cpu-fill"></i></div>
+        <h6 class="fw-bold text-white mb-2">2. Granite Applies Safety Rules</h6>
+        <p class="text-secondary small">
+          Your message is prepended with <code style="color:#a78bfa;">AGENT_INSTRUCTIONS</code> — a
+          system prompt enforcing disaster-only scope, official-authority deference, factual accuracy,
+          and refusal of medical diagnosis or non-emergency topics — before reaching IBM Granite.
+        </p>
+      </div>
+      <div class="col-md-4 pipeline-step">
+        <div class="pipeline-circle"><i class="bi bi-chat-dots-fill"></i></div>
+        <h6 class="fw-bold text-white mb-2">3. Structured Guidance Delivered</h6>
+        <p class="text-secondary small">
+          The model returns numbered, actionable steps tailored to your disaster type.
+          For reports and evacuation plans, it produces fully-formatted professional documents
+          ready for coordination teams.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Platform Modules ── -->
+  <div class="mb-5">
+    <span class="section-label">What's Inside</span>
+    <h4 class="fw-bold text-white mb-4">Platform Modules</h4>
+    <div class="row g-3">
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(220,53,69,.12);">
+            <i class="bi bi-chat-dots-fill text-danger"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">AI Disaster Response Assistant</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              Real-time conversational AI for any disaster scenario. Covers earthquake, flood, wildfire, hurricane, HazMat, SAR coordination, shelter management, and more.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(25,135,84,.12);">
+            <i class="bi bi-signpost-split text-success"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">AI Evacuation Planner</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              AI-generated evacuation plans with routes, assembly points, transport coordination, and special-population protocols for 6 disaster types.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(255,193,7,.12);">
+            <i class="bi bi-broadcast text-warning"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">SOS Distress Generator</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              Generates broadcast-ready MAYDAY rescue coordination messages. Includes Morse code display, Web Audio playback, and international distress signal references.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(13,202,240,.12);">
+            <i class="bi bi-list-check text-info"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">Disaster Preparedness Checklist</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              Interactive preparedness checklists for 8 disaster scenarios — Earthquake, Fire, Flood, Hurricane, Tornado, Pandemic, Power Outage, 72-hour Go Kit — with live progress tracking.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(167,139,250,.12);">
+            <i class="bi bi-file-earmark-text-fill" style="color:#a78bfa;"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">AI Disaster Incident Report</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              3-step form (Incident → Affected Population → Response) that feeds IBM Granite to produce a professional, print-ready disaster situation report with report ID and severity badge.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4">
+        <div class="module-card">
+          <div class="module-card-icon" style="background:rgba(255,193,7,.12);">
+            <i class="bi bi-boxes text-warning"></i>
+          </div>
+          <div>
+            <div class="fw-bold text-white small mb-1">Disaster Resource Manager</div>
+            <div class="text-muted" style="font-size:.78rem;">
+              AI shelter and supply logistics planning. Generates resource management plans covering shelter capacity, food/water distribution, volunteer coordination, and supply chain logistics.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Safety Design Principles ── -->
+  <div class="resq-card p-4 mb-5">
+    <span class="section-label">Responsible AI</span>
+    <h5 class="fw-bold text-white mb-4">Safety Design Principles</h5>
+    <div class="row g-3">
+      <div class="col-md-6">
+        <div class="d-flex gap-3">
+          <i class="bi bi-shield-fill-check text-success fs-4 flex-shrink-0 mt-1"></i>
+          <div>
+            <div class="fw-bold text-white small mb-1">Official Authority First</div>
+            <div class="text-secondary small">Every AI response is anchored with a standing instruction to defer to official emergency management authority directives — FEMA, local EOC, national disaster management agencies — above all else.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex gap-3">
+          <i class="bi bi-sign-stop-fill text-danger fs-4 flex-shrink-0 mt-1"></i>
+          <div>
+            <div class="fw-bold text-white small mb-1">Disaster-Only Scope</div>
+            <div class="text-secondary small">The model is instructed to refuse all non-disaster topics. It will not engage with standalone medical diagnosis, politics, entertainment, or anything outside disaster management. Medical concerns are always referred to EMS.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex gap-3">
+          <i class="bi bi-bar-chart-steps text-info fs-4 flex-shrink-0 mt-1"></i>
+          <div>
+            <div class="fw-bold text-white small mb-1">Low Temperature Inference</div>
+            <div class="text-secondary small">The model runs at temperature 0.3 to maximise factual consistency and minimise hallucination — critical in disaster response and rescue coordination contexts where accuracy directly affects safety.</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="d-flex gap-3">
+          <i class="bi bi-person-x-fill text-warning fs-4 flex-shrink-0 mt-1"></i>
+          <div>
+            <div class="fw-bold text-white small mb-1">No Speculation on Casualties</div>
+            <div class="text-secondary small">ResQAI is explicitly instructed never to speculate on casualty numbers, structural safety, or disaster severity assessments — directing users to official assessments from qualified authorities.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FAQ ── -->
+  <div class="mb-5">
+    <span class="section-label">Frequently Asked Questions</span>
+    <h4 class="fw-bold text-white mb-4">FAQ</h4>
+    <div class="accordion about-faq" id="faqAccordion">
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+            Is ResQAI a replacement for official disaster management authorities?
+          </button>
+        </h2>
+        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <strong>No — absolutely not.</strong> ResQAI is a decision-support and coordination tool. All real-world disaster response must follow directives from qualified emergency management authorities (local EOC, FEMA, national disaster agencies). In any life-threatening situation, always call <strong>911</strong> (or your local emergency number) first. ResQAI is designed to assist with planning, documentation, and guidance — never to replace professional disaster responders.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+            What IBM Watsonx.ai model does ResQAI use?
+          </button>
+        </h2>
+        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            ResQAI uses <strong>IBM Granite 13B Chat v2</strong> (<code>ibm/granite-13b-chat-v2</code>) — IBM's enterprise-grade, safety-focused conversational LLM, served through the <strong>IBM Watsonx.ai</strong> platform via the <code>ibm-watsonx-ai</code> Python SDK.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+            How do I connect my own IBM Cloud credentials?
+          </button>
+        </h2>
+        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Copy <code>.env.example</code> to <code>.env</code> and fill in three values:
+            <code>IBM_API_KEY</code> (from your IBM Cloud IAM settings),
+            <code>WATSONX_PROJECT_ID</code> (from your Watsonx.ai project), and
+            <code>WATSONX_URL</code> (defaults to <code>https://us-south.ml.cloud.ibm.com</code>).
+            The app loads these automatically via <strong>python-dotenv</strong> on startup.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+            Does ResQAI store my conversations or personal data?
+          </button>
+        </h2>
+        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            No. ResQAI does not persist any user input, chat history, or personally identifiable information to a database. Each API request is stateless. IBM Watsonx.ai's own data-handling policies govern what, if anything, is retained on the model-serving infrastructure.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+            What is AGENT_INSTRUCTIONS and why does it matter?
+          </button>
+        </h2>
+        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            <code>AGENT_INSTRUCTIONS</code> is a constant defined in <code>app.py</code> that is prepended to every prompt sent to Granite. It acts as a system-level persona and rule set, enforcing disaster-only scope, official-authority deference, step-by-step formatting, and a no-speculation policy on casualties. Modifying this constant is the primary way to customise ResQAI's behaviour without changing the model itself.
+          </div>
+        </div>
+      </div>
+
+      <div class="accordion-item">
+        <h2 class="accordion-header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq6">
+            Can I deploy ResQAI to production?
+          </button>
+        </h2>
+        <div id="faq6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+          <div class="accordion-body">
+            Yes. For production deployments, use <strong>Gunicorn</strong> (included in <code>requirements.txt</code>) instead of Flask's built-in development server:
+            <br><code>gunicorn -w 4 -b 0.0.0.0:5000 app:app</code><br><br>
+            Set <code>FLASK_DEBUG=False</code> in your <code>.env</code> and use a reverse proxy (nginx / Caddy) in front. IBM Cloud Code Engine and IBM Cloud Foundry are also supported deployment targets.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Disclaimer ── -->
+  <div class="alert resq-alert-danger mb-5">
+    <h6 class="fw-bold mb-2"><i class="bi bi-exclamation-triangle-fill me-2"></i>Important Disclaimer</h6>
+    <p class="mb-0 small">
+      ResQAI is an AI-assisted decision-support tool and does <strong>not</strong> replace professional emergency services,
+      trained disaster management personnel, or official government emergency management authorities.
+      AI responses may contain errors. Always exercise professional judgment, follow official directives,
+      and call <strong>911</strong> (or your local emergency number) immediately in any life-threatening situation.
+    </p>
+  </div>
+
+  <!-- ── CTA ── -->
+  <div class="about-cta">
+    <i class="bi bi-shield-shaded text-danger fs-1 d-block mb-3"></i>
+    <h4 class="fw-bold text-white mb-2">Ready to use ResQAI?</h4>
+    <p class="text-secondary mb-4">Launch the AI Disaster Assistant, plan your evacuation, or manage disaster resources now.</p>
+    <div class="d-flex flex-wrap gap-3 justify-content-center">
+      <a href="{{ url_for('assistant') }}" class="btn btn-danger px-4">
+        <i class="bi bi-chat-dots me-2"></i>Launch AI Assistant
+      </a>
+      <a href="{{ url_for('evacuation') }}" class="btn btn-outline-light px-4">
+        <i class="bi bi-signpost-split me-2"></i>Evacuation Planner
+      </a>
+      <a href="{{ url_for('contacts') }}" class="btn btn-outline-secondary px-4">
+        <i class="bi bi-telephone me-2"></i>Emergency Contacts
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

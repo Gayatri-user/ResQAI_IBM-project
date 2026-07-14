@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+{% block title %}AI Disaster Response Assistant — ResQAI{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <!-- Header -->
+      <div class="d-flex align-items-center gap-3 mb-4">
+        <div class="resq-feature-icon-lg bg-danger-subtle">
+          <i class="bi bi-chat-dots-fill text-danger fs-2"></i>
+        </div>
+        <div>
+          <h2 class="fw-bold mb-0">AI Disaster Response Assistant</h2>
+          <p class="text-muted small mb-0">Powered by IBM Watsonx.ai Granite — real-time disaster response and rescue coordination guidance</p>
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="alert resq-alert-warning mb-4" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>Follow official emergency management authority directives at all times.</strong> For life-threatening situations, call <strong>911</strong> immediately. This AI assistant is a decision-support tool — it does not replace trained responders.
+      </div>
+
+      <!-- Chat Window -->
+      <div class="resq-chat-container mb-3">
+        <div id="chatMessages" class="resq-chat-messages">
+          <!-- Welcome message -->
+          <div class="resq-msg resq-msg-ai">
+            <div class="resq-msg-avatar"><i class="bi bi-shield-shaded"></i></div>
+            <div class="resq-msg-bubble">
+              <p class="mb-1"><strong>ResQAI Disaster Response — Online.</strong></p>
+              <p class="mb-0">Hello. I'm ResQAI — your intelligent disaster response and rescue coordination assistant. I can help with evacuation planning, search and rescue coordination, resource logistics, SOS communications, disaster preparedness, and incident documentation. What is your situation?</p>
+              <div class="resq-msg-time">Just now</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Prompts -->
+      <div class="mb-3">
+        <small class="text-muted fw-semibold d-block mb-2">Quick prompts:</small>
+        <div class="d-flex flex-wrap gap-2" id="quickPrompts">
+          <button class="btn btn-sm resq-quick-btn" data-prompt="A major earthquake has struck our city. What are the immediate response priorities?">Earthquake Response</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="Flash flood warning issued. How should we evacuate low-lying residential areas?">Flood Evacuation</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="Wildfire is approaching our community. What evacuation actions should we take now?">Wildfire Evacuation</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="Category 4 hurricane is 24 hours away. What should our emergency management team do?">Hurricane Prep</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="Structural collapse at a building site with possible survivors trapped. How do we coordinate search and rescue?">Search & Rescue</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="We have 500 displaced persons at a shelter. How do we manage food, water, and sanitation?">Shelter Management</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="HazMat spill at an industrial facility. What are the immediate containment and evacuation steps?">HazMat Incident</button>
+          <button class="btn btn-sm resq-quick-btn" data-prompt="Power grid has failed across multiple counties. What are the disaster management priorities?">Power Grid Failure</button>
+        </div>
+      </div>
+
+      <!-- Input Area -->
+      <div class="resq-chat-input-area">
+        <div class="input-group">
+          <textarea id="userInput" class="form-control resq-input" rows="2" placeholder="Describe the disaster situation or ask for response guidance..." maxlength="1000"></textarea>
+          <button id="sendBtn" class="btn btn-danger px-4" type="button">
+            <span id="sendBtnText"><i class="bi bi-send-fill me-1"></i>Send</span>
+            <span id="sendBtnSpinner" class="d-none"><span class="spinner-border spinner-border-sm me-1"></span>Thinking...</span>
+          </button>
+        </div>
+        <small class="text-muted mt-1 d-block"><i class="bi bi-keyboard me-1"></i>Press Ctrl+Enter to send</small>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+const chatMessages = document.getElementById('chatMessages');
+const userInput = document.getElementById('userInput');
+const sendBtn = document.getElementById('sendBtn');
+const sendBtnText = document.getElementById('sendBtnText');
+const sendBtnSpinner = document.getElementById('sendBtnSpinner');
+
+function getTime() {
+  return new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+}
+
+function appendMessage(role, text) {
+  const wrapper = document.createElement('div');
+  wrapper.className = role === 'user' ? 'resq-msg resq-msg-user' : 'resq-msg resq-msg-ai';
+
+  if (role === 'ai') {
+    wrapper.innerHTML = `
+      <div class="resq-msg-avatar"><i class="bi bi-shield-shaded"></i></div>
+      <div class="resq-msg-bubble">
+        <p class="mb-0 resq-ai-text">${text.replace(/\n/g, '<br>')}</p>
+        <div class="resq-msg-time">${getTime()}</div>
+      </div>`;
+  } else {
+    wrapper.innerHTML = `
+      <div class="resq-msg-bubble resq-user-bubble">
+        <p class="mb-0">${text.replace(/\n/g, '<br>')}</p>
+        <div class="resq-msg-time">${getTime()}</div>
+      </div>
+      <div class="resq-msg-avatar resq-user-avatar"><i class="bi bi-person-fill"></i></div>`;
+  }
+  chatMessages.appendChild(wrapper);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function appendTyping() {
+  const div = document.createElement('div');
+  div.className = 'resq-msg resq-msg-ai';
+  div.id = 'typingIndicator';
+  div.innerHTML = `
+    <div class="resq-msg-avatar"><i class="bi bi-shield-shaded"></i></div>
+    <div class="resq-msg-bubble">
+      <div class="resq-typing"><span></span><span></span><span></span></div>
+    </div>`;
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function removeTyping() {
+  const el = document.getElementById('typingIndicator');
+  if (el) el.remove();
+}
+
+function setLoading(loading) {
+  sendBtn.disabled = loading;
+  userInput.disabled = loading;
+  sendBtnText.classList.toggle('d-none', loading);
+  sendBtnSpinner.classList.toggle('d-none', !loading);
+}
+
+async function sendMessage() {
+  const message = userInput.value.trim();
+  if (!message) return;
+
+  appendMessage('user', message);
+  userInput.value = '';
+  appendTyping();
+  setLoading(true);
+
+  try {
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({message})
+    });
+    const data = await res.json();
+    removeTyping();
+    appendMessage('ai', data.reply || data.error || 'An unexpected error occurred.');
+  } catch (e) {
+    removeTyping();
+    appendMessage('ai', '⚠️ Network error. Please check your connection and try again.');
+  } finally {
+    setLoading(false);
+    userInput.focus();
+  }
+}
+
+sendBtn.addEventListener('click', sendMessage);
+userInput.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'Enter') sendMessage();
+});
+
+document.querySelectorAll('.resq-quick-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    userInput.value = btn.dataset.prompt;
+    sendMessage();
+  });
+});
+
+// Pre-fill from URL query parameter ?q=
+const urlQ = new URLSearchParams(window.location.search).get('q');
+if (urlQ) {
+  userInput.value = `What should I do during a ${urlQ}?`;
+  setTimeout(sendMessage, 300);
+}
+</script>
+{% endblock %}
